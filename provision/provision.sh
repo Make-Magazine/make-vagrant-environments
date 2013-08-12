@@ -230,6 +230,33 @@ if [ ! -e /etc/nginx/server.crt ]; then
 	echo $vvvsigncert
 fi
 
+## TODO: get node.js and Grunt installed and working.
+## The scripts below "theoretically" install and set them up.
+## These are requested as part of the new WordPress development build process http://make.wordpress.org/core/2013/08/06/a-new-frontier-for-core-development/
+# # Download & Unpack Node.js - v. 0.10.15
+# echo 'Download Node.js - v. 0.10.15'
+# mkdir /tmp/node-install
+# cd /tmp/node-install
+# wget http://nodejs.org/dist/v0.10.15/node-v0.10.15.pkg
+# tar -zxf node-v0.10.15.tar.gz
+# echo 'Node.js download & unpack completed'
+ 
+# # Install Node.js
+# echo 'Install Node.js'
+# cd node-v0.10.15
+# ./configure && make && make install
+# echo 'Node.js install completed'
+ 
+# # Install Node Package Manager
+# echo 'Install Node Package Manager'
+# curl http://npmjs.org/install.sh | sudo sh
+# echo 'NPM install completed'
+
+# # Setting up Grunt - this is a temporary step to pull in code will eventually live inside of the develop repository
+# grunt setup
+
+
+
 # SYMLINK HOST FILES
 printf "\nSetup configuration file links...\n"
 
@@ -343,60 +370,22 @@ then
 		git pull --rebase origin master
 	fi
 
-	# Install and configure the latest stable version of WordPress
-	if [ ! -d /srv/www/wordpress-default ]
+
+	# Checkout, install and configure WordPress development trunk
+	if [ ! -d /srv/www/src ]
 	then
-		printf "Downloading WordPress.....http://wordpress.org\n"
+		printf "Checking out WordPress development trunk....http://develop.svn.wordpress.org/trunk\n"
+		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/
+		cd /srv/www/src
+		printf "Configuring WordPress development trunk...\n"
+		wp core config --dbname=makeblog --dbuser=root --dbpass=blank --quiet --extra-php <<PHP
+define( "WP_DEBUG", true );
+PHP
+		wp core install --url=local.make.dev --quiet --title="Local Make Blog Development Server" --admin_name=admin --admin_email="admin@local.dev" --admin_password="admin"
+	else
+		printf "Updating WordPress development trunk...\n"
 		cd /srv/www/
-		curl -O http://wordpress.org/latest.tar.gz
-		tar -xvf latest.tar.gz
-		mv wordpress wordpress-default
-		rm latest.tar.gz
-		cd /srv/www/wordpress-default
-		printf "Configuring WordPress...\n"
-		wp core config --dbname=wordpress_default --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-define( "WP_DEBUG", true );
-PHP
-		wp core install --url=local.wordpress.dev --quiet --title="Local WordPress Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		printf "Updating WordPress stable...\n"
-		cd /srv/www/wordpress-default
-		wp core upgrade
-	fi
-
-	# Checkout, install and configure WordPress trunk
-	if [ ! -d /srv/www/wordpress-trunk ]
-	then
-		printf "Checking out WordPress trunk....http://core.svn.wordpress.org/trunk\n"
-		svn checkout http://core.svn.wordpress.org/trunk/ /srv/www/wordpress-trunk
-		cd /srv/www/wordpress-trunk
-		printf "Configuring WordPress trunk...\n"
-		wp core config --dbname=wordpress_trunk --dbuser=wp --dbpass=wp --quiet --extra-php <<PHP
-define( "WP_DEBUG", true );
-PHP
-		wp core install --url=local.wordpress-trunk.dev --quiet --title="Local WordPress Trunk Dev" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
-	else
-		printf "Updating WordPress trunk...\n"
-		cd /srv/www/wordpress-trunk
 		svn up --ignore-externals
-	fi
-
-	# Checkout and configure the WordPress unit tests
-	if [ ! -d /srv/www/wordpress-unit-tests ]
-	then
-		printf "Downloading WordPress Unit Tests.....https://unit-tests.svn.wordpress.org\n"
-		# Must be in a WP directory to run wp
-		cd /srv/www/wordpress-trunk
-		wp core init-tests /srv/www/wordpress-unit-tests --dbname=wordpress_unit_tests --dbuser=wp --dbpass=wp
-	else
-		if [ ! -d /srv/www/wordpress-unit-tests/.svn ]
-		then
-			printf "Skipping WordPress unit tests...\n"
-		else
-			printf "Updating WordPress unit tests...\n"
-			cd /srv/www/wordpress-unit-tests
-			svn up --ignore-externals
-		fi
 	fi
 
 	# Download phpMyAdmin 4.0.3
@@ -416,7 +405,7 @@ else
 fi
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
-DOMAINS='local.wordpress.dev local.wordpress-trunk.dev'
+DOMAINS='local.make.dev'
 if ! grep -q "$DOMAINS" /etc/hosts
 then echo "127.0.0.1 $DOMAINS" >> /etc/hosts
 fi
