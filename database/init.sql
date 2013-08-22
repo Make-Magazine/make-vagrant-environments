@@ -1,6 +1,6 @@
-# We include default installations of WordPress with this Vagrant setup.
-# In order for that to respond properly, default databases should be
-# available for use.
+# We include makeblog and makerfaire themes. We'll need a database to get up and running
+
+# Setup the makeblog database
 CREATE DATABASE IF NOT EXISTS `makeblog`;
 GRANT ALL PRIVILEGES ON `makeblog`.* TO 'root'@'localhost' IDENTIFIED BY 'blank';
 CREATE DATABASE IF NOT EXISTS `makerfaire`;

@@ -374,8 +374,8 @@ then
 	# Checkout, install and configure WordPress development trunk
 	if [ ! -d /srv/www/src ]
 	then
-		printf "Checking out WordPress development trunk....http://develop.svn.wordpress.org/trunk\n"
-		svn checkout http://develop.svn.wordpress.org/trunk/ /srv/www/
+		printf "Checking out WordPress development trunk.... http://develop.svn.wordpress.org/trunk\n"
+		svn co http://develop.svn.wordpress.org/trunk/ /srv/www/
 		cd /srv/www/src
 		printf "Configuring WordPress development trunk...\n"
 		wp core config --dbname=makeblog --dbuser=root --dbpass=blank --quiet --extra-php <<PHP
@@ -387,6 +387,49 @@ PHP
 		cd /srv/www/
 		svn up --ignore-externals
 	fi
+
+	# Checkout makeblog theme
+	if [ ! -d /srv/www/src/wp-content/themes/makeblog ]
+	then
+		printf "Pulling Makeblog from GitHub... https://github.com/Make-Magazine/makeblog.git\n"
+		cd /srv/www/src/wp-content/themes/
+		mkdir makeblog
+		cd makeblog
+		git init
+		git remote add -f origin https://github.com/Make-Magazine/makeblog.git
+		git checkout -f master
+	else
+		printf "Updating the makeblog theme...\n"
+		cd /srv/www/src/wp-content/themes/makeblog/
+		git pull origin
+	fi
+
+	# Checkout makerfaire theme
+	if [ ! -d /srv/www/src/wp-content/themes/makerfaire ]
+	then
+		printf "Pulling makerfaire from GitHub... https://github.com/Make-Magazine/makerfaire.git\n"
+		cd /srv/www/src/wp-content/themes/
+		mkdir makerfaire
+		cd makerfaire
+		git init
+		git remote add -f origin https://github.com/Make-Magazine/makerfaire.git
+		git checkout -f master
+	else
+		printf "Updating the makerfaire theme...\n"
+		cd /srv/www/src/wp-content/themes/makerfaire/
+		git pull origin
+	fi
+
+	# Get our VIP plugins - Requires WordPress.com credentials....
+	# if [ ! -d /src/www/src/wp-content/themes/vip/plugins ]
+	# then
+	# 	printf "Checking out the VIP Plugins...\n"
+	# 	svn co https://vip-svn.wordpress.com/plugins/ /srv/www/src/wp-content/themes/vip/plugins/
+	# else
+	# 	printf "Updating VIP Plugins...\n"
+	# 	cd /srv/www/src/wp-content/themes/vip/plugins/
+	# 	svn up
+	# fi
 
 	# Download phpMyAdmin 4.0.3
 	if [ ! -d /srv/www/default/database-admin ]
@@ -401,8 +444,9 @@ PHP
 		printf "PHPMyAdmin 4.0.3 already installed.\n"
 	fi
 else
-	printf "\nNo network available, skipping network installations"
+	printf "\nNo network available, skipping network installations. Please connect to the internet for everything"
 fi
+
 # Add any custom domains to the virtual machine's hosts file so that it
 # is self aware. Enter domains space delimited as shown with the default.
 DOMAINS='local.make.dev'
