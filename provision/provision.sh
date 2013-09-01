@@ -421,15 +421,83 @@ PHP
 	fi
 
 	# Get our VIP plugins - Requires WordPress.com credentials....
-	# if [ ! -d /src/www/src/wp-content/themes/vip/plugins ]
-	# then
-	# 	printf "Checking out the VIP Plugins...\n"
-	# 	svn co https://vip-svn.wordpress.com/plugins/ /srv/www/src/wp-content/themes/vip/plugins/
-	# else
-	# 	printf "Updating VIP Plugins...\n"
-	# 	cd /srv/www/src/wp-content/themes/vip/plugins/
-	# 	svn up
-	# fi
+	if [ ! -d /srv/www/src/wp-content/themes/vip/plugins ]
+	then
+		printf "\n************************************************************************************************************\n"
+		printf "**************                                                                                  **************\n"
+		printf "**************   VIP Plugins NOT FOUND! Please manually add these files to wp-content/themes/   **************\n"
+		printf "**************                                                                                  **************\n"
+		printf "**************************************************************************************************************\n\n"
+
+	else
+		printf "VIP Plugins already setup.\n"
+	fi
+
+	# Get the Developer plugin
+	if [ ! -d /srv/www/src/wp-content/plugins/developer ]
+	then
+		printf "Checking out the Developer plugin... http://wordpress.org/plugins/developer/trunk/\n"
+		svn co http://plugins.svn.wordpress.org/developer/trunk/ /srv/www/src/wp-content/plugins/developer/
+	else
+		printf "Updating the Developer plugin... (trunk)\n"
+		cd /srv/www/src/wp-content/plugins/developer/
+		svn up
+	fi
+
+	# Get Debug Bar plugin
+	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar ]
+	then
+		printf "Checking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/trunk/\n"
+		svn co http://plugins.svn.wordpress.org/debug-bar/trunk/ /srv/www/src/wp-content/plugins/debug-bar/
+	else
+		printf "Updating the Debug Bar plugin... (trunk)\n"
+		cd /srv/www/src/wp-content/plugins/debug-bar/
+		svn up
+	fi
+
+	# Get Debug Bar Console plugin
+	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar-console ]
+	then
+		printf "Checking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/trunk/\n"
+		svn co http://plugins.svn.wordpress.org/debug-bar-console/trunk/ /srv/www/src/wp-content/plugins/debug-bar-console/
+	else
+		printf "Updating the Debug Bar plugin... (trunk)\n"
+		cd /srv/www/src/wp-content/plugins/debug-bar-console/
+		svn up
+	fi
+
+	# Get VIP Scanner
+	if [ ! -d /srv/www/src/wp-content/plugins/vip-scanner ]
+	then
+		printf "Checking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/trunk/\n"
+		svn co http://plugins.svn.wordpress.org/vip-scanner/trunk/ /srv/www/src/wp-content/plugins/vip-scanner/
+	else
+		printf "Updating VIP Scanner... (trunk)\n"
+		cd /srv/www/src/wp-content/plugins/vip-scanner/
+		svn up
+	fi
+
+	# Get JetPack
+	if [ ! -d /srv/www/src/wp-content/plugins/jetpack ]
+	then
+		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/trunk/\n"
+		svn co http://plugins.svn.wordpress.org/jetpack/trunk/ /srv/www/src/wp-content/plugins/jetpack/
+	else
+		printf "Updating JetPack... (trunk)\n"
+		cd /srv/www/src/wp-content/plugins/jetpack/
+		svn up
+	fi
+
+	# Get MP6
+	if [ ! -d /srv/www/src/wp-content/plugins/mp6 ]
+	then
+		printf "Checking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/trunk/\n"
+		svn co http://plugins.svn.wordpress.org/mp6/trunk/ /srv/www/src/wp-content/plugins/mp6/
+	else
+		printf "Updating MP6... (trunk)\n"
+		cd /srv/www/src/wp-content/plugins/mp6/
+		svn up
+	fi
 
 	# Download phpMyAdmin 4.0.3
 	if [ ! -d /srv/www/default/database-admin ]
@@ -444,7 +512,7 @@ PHP
 		printf "PHPMyAdmin 4.0.3 already installed.\n"
 	fi
 else
-	printf "\nNo network available, skipping network installations. Please connect to the internet for everything"
+	printf "\nNo network available, skipping network installations. Please connect to the internet to install/update your files."
 fi
 
 # Add any custom domains to the virtual machine's hosts file so that it
@@ -463,4 +531,4 @@ then
 else
 	echo No external network available. Package installation and maintenance skipped.
 fi
-echo For further setup instructions, visit http://$vvv_ip
+echo Server root can be found at http://$DOMAINS, or you may visit http://$vvv_ip
