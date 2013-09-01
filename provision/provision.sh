@@ -384,14 +384,14 @@ PHP
 		wp core install --url=local.make.dev --quiet --title="Local Make Blog Development Server" --admin_name=admin --admin_email="admin@local.dev" --admin_password="admin"
 		printf "\n"
 		printf "WordPress dev files setup.\n"
-		printf "----------------------------------------------------"
+		printf "*****************************************************"
 	else
 		printf "Updating WordPress development trunk...\n"
 		cd /srv/www/
 		svn up --ignore-externals
 		printf "\n"
 		printf "WordPress dev files updated.\n"
-		printf "----------------------------------------------------"
+		printf "*****************************************************"
 	fi
 
 	# Checkout makeblog theme
@@ -407,7 +407,7 @@ PHP
 		defaulttheme='set'
 		printf "\n"
 		printf "Make Magazine theme setup.\n"
-		printf "----------------------------------------------------"
+		printf "*****************************************************"
 	else
 		printf "Updating the makeblog theme...\n"
 		cd /srv/www/src/wp-content/themes/makeblog/
@@ -415,7 +415,7 @@ PHP
 		defaulttheme=1
 		printf "\n"
 		printf "Make Magazine theme upated to the latest version.\n"
-		printf "----------------------------------------------------"
+		printf "*****************************************************"
 	fi
 
 	# Checkout makerfaire theme
@@ -429,14 +429,14 @@ PHP
 		git remote add -f origin https://github.com/Make-Magazine/makerfaire.git
 		git checkout -f master
 		printf "Maker Faire theme setup.\n"
-		printf "----------------------------------------------------"
+		printf "*****************************************************"
 		printf "\n"
 	else
 		printf "Updating the makerfaire theme...\n"
 		cd /srv/www/src/wp-content/themes/makerfaire/
 		git pull --rebse origin master
 		printf "Maker Faire theme updated to the latest version.\n"
-		printf "----------------------------------------------------"
+		printf "*****************************************************"
 		printf "\n"
 	fi
 
@@ -459,11 +459,11 @@ PHP
 		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/\n"
 		wp plugin install jetpack
 		wp plugin activate jetpack
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	else
 		printf "Updating JetPack...\n"
 		wp plugin update jetpack
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	fi
 
 	# Get the Developer plugin
@@ -473,11 +473,11 @@ PHP
 		cd /srv/www/src/
 		wp plugin install developer
 		wp plugin activate developer
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	else
 		printf "Updating the Developer plugin...\n"
 		wp plugin update developer
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	fi
 
 	# Get Debug Bar plugin
@@ -486,11 +486,11 @@ PHP
 		printf "Checking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/\n"
 		wp plugin install debug-bar
 		wp plugin activate debug-bar
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	else
 		printf "Updating the Debug Bar plugin...\n"
 		wp plugin update debug-bar
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	fi
 
 	# Get Debug Bar Console plugin
@@ -499,11 +499,11 @@ PHP
 		printf "Checking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/\n"
 		wp plugin install debug-bar-console
 		wp plugin activate debug-bar-console
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	else
 		printf "Updating the Debug Bar plugin...\n"
 		wp plugin update debug-bar-console
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	fi
 
 	# Get VIP Scanner
@@ -512,11 +512,11 @@ PHP
 		printf "Checking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/\n"
 		wp plugin install vip-scanner
 		wp plugin activate vip-scanner
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	else
 		printf "Updating VIP Scanner...\n"
 		wp plugin update vip-scanner
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	fi
 
 	# Get MP6
@@ -525,11 +525,11 @@ PHP
 		printf "Checking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/\n"
 		wp plugin install mp6
 		wp plugin activate mp6
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	else
 		printf "Updating MP6...\n"
 		wp plugin update mp6
-		printf "----------------------------------------------------\n"
+		printf "****************************************************\n"
 	fi
 
 	# Check our default theme variable and see if we need to activate the makeblog theme
