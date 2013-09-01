@@ -398,10 +398,12 @@ PHP
 		git init
 		git remote add -f origin https://github.com/Make-Magazine/makeblog.git
 		git checkout -f master
+		defaulttheme=1
 	else
 		printf "Updating the makeblog theme...\n"
 		cd /srv/www/src/wp-content/themes/makeblog/
 		git pull origin
+		defaulttheme='set'
 	fi
 
 	# Checkout makerfaire theme
@@ -433,70 +435,78 @@ PHP
 		printf "VIP Plugins already setup.\n"
 	fi
 
+	# Get JetPack !! MUST LOAD FIRST OR ELSE VIP "is_mobile()" ERRORS OCCURE!
+	if [ ! -d /srv/www/src/wp-content/plugins/jetpack ]
+	then
+		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/trunk/\n"
+		wp plugin install jetpack
+		wp plugin activate jetpack
+	else
+		printf "Updating JetPack... (trunk)\n"
+		wp plugin update jetpack
+	fi
+
 	# Get the Developer plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/developer ]
 	then
-		printf "Checking out the Developer plugin... http://wordpress.org/plugins/developer/trunk/\n"
-		svn co http://plugins.svn.wordpress.org/developer/trunk/ /srv/www/src/wp-content/plugins/developer/
+		printf "Checking out the Developer plugin... http://wordpress.org/plugins/developer/\n"
+		cd /srv/www/src/
+		wp plugin install developer
+		wp plugin activate developer
 	else
-		printf "Updating the Developer plugin... (trunk)\n"
-		cd /srv/www/src/wp-content/plugins/developer/
-		svn up
+		printf "Updating the Developer plugin...\n"
+		wp plugin update developer
 	fi
 
 	# Get Debug Bar plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar ]
 	then
-		printf "Checking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/trunk/\n"
-		svn co http://plugins.svn.wordpress.org/debug-bar/trunk/ /srv/www/src/wp-content/plugins/debug-bar/
+		printf "Checking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/\n"
+		wp plugin install debug-bar
+		wp plugin activate debug-bar
 	else
 		printf "Updating the Debug Bar plugin... (trunk)\n"
-		cd /srv/www/src/wp-content/plugins/debug-bar/
-		svn up
+		wp plugin update debug-bar
 	fi
 
 	# Get Debug Bar Console plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar-console ]
 	then
 		printf "Checking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/trunk/\n"
-		svn co http://plugins.svn.wordpress.org/debug-bar-console/trunk/ /srv/www/src/wp-content/plugins/debug-bar-console/
+		wp plugin install debug-bar-console
+		wp plugin activate debug-bar-console
 	else
 		printf "Updating the Debug Bar plugin... (trunk)\n"
-		cd /srv/www/src/wp-content/plugins/debug-bar-console/
-		svn up
+		wp plugin update debug-bar-console
 	fi
 
 	# Get VIP Scanner
 	if [ ! -d /srv/www/src/wp-content/plugins/vip-scanner ]
 	then
 		printf "Checking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/trunk/\n"
-		svn co http://plugins.svn.wordpress.org/vip-scanner/trunk/ /srv/www/src/wp-content/plugins/vip-scanner/
+		wp plugin install vip-scanner
+		wp plugin activate vip-scanner
 	else
 		printf "Updating VIP Scanner... (trunk)\n"
-		cd /srv/www/src/wp-content/plugins/vip-scanner/
-		svn up
-	fi
-
-	# Get JetPack
-	if [ ! -d /srv/www/src/wp-content/plugins/jetpack ]
-	then
-		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/trunk/\n"
-		svn co http://plugins.svn.wordpress.org/jetpack/trunk/ /srv/www/src/wp-content/plugins/jetpack/
-	else
-		printf "Updating JetPack... (trunk)\n"
-		cd /srv/www/src/wp-content/plugins/jetpack/
-		svn up
+		wp plugin update vip-scanner
 	fi
 
 	# Get MP6
 	if [ ! -d /srv/www/src/wp-content/plugins/mp6 ]
 	then
 		printf "Checking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/trunk/\n"
-		svn co http://plugins.svn.wordpress.org/mp6/trunk/ /srv/www/src/wp-content/plugins/mp6/
+		wp plugin install mp6
+		wp plugin activate mp6
 	else
 		printf "Updating MP6... (trunk)\n"
-		cd /srv/www/src/wp-content/plugins/mp6/
-		svn up
+		wp plugin update mp6
+	fi
+
+	# Check our default theme variable and see if we need to activate the makeblog theme
+	re='^[0-9]+$'
+	if ! [[ $defaulttheme =~ $re ]] ; then
+		wp theme activate makeblog
+		printf "Makeblog enabled...\n"
 	fi
 
 	# Download phpMyAdmin 4.0.3
