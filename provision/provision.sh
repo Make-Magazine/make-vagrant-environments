@@ -382,10 +382,16 @@ then
 define( "WP_DEBUG", true );
 PHP
 		wp core install --url=local.make.dev --quiet --title="Local Make Blog Development Server" --admin_name=admin --admin_email="admin@local.dev" --admin_password="admin"
+		printf "\n"
+		printf "WordPress dev files setup.\n"
+		printf "----------------------------------------------------"
 	else
 		printf "Updating WordPress development trunk...\n"
 		cd /srv/www/
 		svn up --ignore-externals
+		printf "\n"
+		printf "WordPress dev files updated.\n"
+		printf "----------------------------------------------------"
 	fi
 
 	# Checkout makeblog theme
@@ -398,12 +404,18 @@ PHP
 		git init
 		git remote add -f origin https://github.com/Make-Magazine/makeblog.git
 		git checkout -f master
-		defaulttheme=1
+		defaulttheme='set'
+		printf "\n"
+		printf "Make Magazine theme setup.\n"
+		printf "----------------------------------------------------"
 	else
 		printf "Updating the makeblog theme...\n"
 		cd /srv/www/src/wp-content/themes/makeblog/
-		git pull origin
-		defaulttheme='set'
+		git pull --rebase origin master
+		defaulttheme=1
+		printf "\n"
+		printf "Make Magazine theme upated to the latest version.\n"
+		printf "----------------------------------------------------"
 	fi
 
 	# Checkout makerfaire theme
@@ -416,34 +428,42 @@ PHP
 		git init
 		git remote add -f origin https://github.com/Make-Magazine/makerfaire.git
 		git checkout -f master
+		printf "Maker Faire theme setup.\n"
+		printf "----------------------------------------------------"
+		printf "\n"
 	else
 		printf "Updating the makerfaire theme...\n"
 		cd /srv/www/src/wp-content/themes/makerfaire/
-		git pull origin
+		git pull --rebse origin master
+		printf "Maker Faire theme updated to the latest version.\n"
+		printf "----------------------------------------------------"
+		printf "\n"
 	fi
 
 	# Get our VIP plugins - Requires WordPress.com credentials....
 	if [ ! -d /srv/www/src/wp-content/themes/vip/plugins ]
 	then
-		printf "\n************************************************************************************************************\n"
+		printf "\n**************************************************************************************************************\n"
 		printf "**************                                                                                  **************\n"
 		printf "**************   VIP Plugins NOT FOUND! Please manually add these files to wp-content/themes/   **************\n"
 		printf "**************                                                                                  **************\n"
 		printf "**************************************************************************************************************\n\n"
 
 	else
-		printf "VIP Plugins already setup.\n"
+		printf "VIP Plugins already setup... Thou shall pass.\n"
 	fi
 
 	# Get JetPack !! MUST LOAD FIRST OR ELSE VIP "is_mobile()" ERRORS OCCURE!
 	if [ ! -d /srv/www/src/wp-content/plugins/jetpack ]
 	then
-		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/trunk/\n"
+		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/\n"
 		wp plugin install jetpack
 		wp plugin activate jetpack
+		printf "----------------------------------------------------\n"
 	else
-		printf "Updating JetPack... (trunk)\n"
+		printf "Updating JetPack...\n"
 		wp plugin update jetpack
+		printf "----------------------------------------------------\n"
 	fi
 
 	# Get the Developer plugin
@@ -453,9 +473,11 @@ PHP
 		cd /srv/www/src/
 		wp plugin install developer
 		wp plugin activate developer
+		printf "----------------------------------------------------\n"
 	else
 		printf "Updating the Developer plugin...\n"
 		wp plugin update developer
+		printf "----------------------------------------------------\n"
 	fi
 
 	# Get Debug Bar plugin
@@ -464,42 +486,50 @@ PHP
 		printf "Checking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/\n"
 		wp plugin install debug-bar
 		wp plugin activate debug-bar
+		printf "----------------------------------------------------\n"
 	else
-		printf "Updating the Debug Bar plugin... (trunk)\n"
+		printf "Updating the Debug Bar plugin...\n"
 		wp plugin update debug-bar
+		printf "----------------------------------------------------\n"
 	fi
 
 	# Get Debug Bar Console plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar-console ]
 	then
-		printf "Checking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/trunk/\n"
+		printf "Checking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/\n"
 		wp plugin install debug-bar-console
 		wp plugin activate debug-bar-console
+		printf "----------------------------------------------------\n"
 	else
-		printf "Updating the Debug Bar plugin... (trunk)\n"
+		printf "Updating the Debug Bar plugin...\n"
 		wp plugin update debug-bar-console
+		printf "----------------------------------------------------\n"
 	fi
 
 	# Get VIP Scanner
 	if [ ! -d /srv/www/src/wp-content/plugins/vip-scanner ]
 	then
-		printf "Checking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/trunk/\n"
+		printf "Checking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/\n"
 		wp plugin install vip-scanner
 		wp plugin activate vip-scanner
+		printf "----------------------------------------------------\n"
 	else
-		printf "Updating VIP Scanner... (trunk)\n"
+		printf "Updating VIP Scanner...\n"
 		wp plugin update vip-scanner
+		printf "----------------------------------------------------\n"
 	fi
 
 	# Get MP6
 	if [ ! -d /srv/www/src/wp-content/plugins/mp6 ]
 	then
-		printf "Checking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/trunk/\n"
+		printf "Checking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/\n"
 		wp plugin install mp6
 		wp plugin activate mp6
+		printf "----------------------------------------------------\n"
 	else
-		printf "Updating MP6... (trunk)\n"
+		printf "Updating MP6...\n"
 		wp plugin update mp6
+		printf "----------------------------------------------------\n"
 	fi
 
 	# Check our default theme variable and see if we need to activate the makeblog theme
