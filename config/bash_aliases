@@ -35,3 +35,10 @@ xdebug_on() {
 	sudo php5enmod xdebug
 	sudo service php5-fpm restart
 }
+
+# Navigate to makeblog
+alias wproot="cd /srv/www/src/"
+alias makeblog="cd /srv/www/src/wp-content/themes/makeblog/"
+alias makerfaire="cd /srv/www/src/wp-content/themes/makerfaire/"
+alias themes="cd /srv/www/src/wp-content/themes/"
+alias plugins="cd /srv/www/src/wp-content/plugins/"

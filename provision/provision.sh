@@ -380,6 +380,9 @@ then
 		printf "Configuring WordPress development trunk...\n"
 		wp core config --dbname=makeblog --dbuser=root --dbpass=blank --quiet --extra-php <<PHP
 define( "WP_DEBUG", true );
+
+// Allow Jetpack to run on our Vagrant server
+define( 'JETPACK_DEV_DEBUG', true );
 PHP
 		wp core install --url=local.make.dev --quiet --title="Local Make Blog Development Server" --admin_name=admin --admin_email="admin@local.dev" --admin_password="admin"
 		printf "\n"
@@ -409,13 +412,23 @@ PHP
 		printf "Make Magazine theme setup.\n"
 		printf "*****************************************************"
 	else
-		printf "Updating the makeblog theme...\n"
-		cd /srv/www/src/wp-content/themes/makeblog/
-		git pull --rebase origin master
-		defaulttheme=1
-		printf "\n"
-		printf "Make Magazine theme upated to the latest version.\n"
-		printf "*****************************************************"
+		if [ ! -d /srv/www/src/wp-content/themes/makeblog/.git ]
+		then
+			printf "\nMake Blog theme detected but is not synced with the GitHub repo.\n"
+			printf "Syncronizing theme with GitHub repo... https://github.com/Make-Magazine/makeblog.git\n"
+			cd /srv/www/src/wp-content/themes/makeblog/
+			git init
+			git remote add -f origin https://github.com/Make-Magazine/makeblog.git
+			git checkout -f master
+		else
+			printf "\nUpdating the makeblog theme...\n"
+			cd /srv/www/src/wp-content/themes/makeblog/
+			git pull --rebase origin master
+			defaulttheme=1
+			printf "\n"
+			printf "Make Magazine theme upated to the latest version.\n"
+			printf "*****************************************************"
+		fi
 	fi
 
 	# Checkout makerfaire theme
@@ -432,12 +445,21 @@ PHP
 		printf "*****************************************************"
 		printf "\n"
 	else
-		printf "Updating the makerfaire theme...\n"
-		cd /srv/www/src/wp-content/themes/makerfaire/
-		git pull --rebse origin master
-		printf "Maker Faire theme updated to the latest version.\n"
-		printf "*****************************************************"
-		printf "\n"
+		if [ ! -d /srv/www/src/wp-content/themes/makerfaire/.git ]
+			printf "\nMaker Faire theme detected but is not synced with the GitHub repo.\n"
+			printf "Syncronizing theme with GitHub repo... https://github.com/Make-Magazine/makerfaire.git\n"
+			cd /srv/www/src/wp-content/themes/makerfaire
+			git init
+			git remote add -f origin https://github.com/Make-Magazine/makerfaire.git
+			git checkout -f master
+		else
+			printf "\nUpdating the makerfaire theme...\n"
+			cd /srv/www/src/wp-content/themes/makerfaire/
+			git pull --rebase origin master
+			printf "Maker Faire theme updated to the latest version.\n"
+			printf "*****************************************************"
+			printf "\n"
+		fi
 	fi
 
 	# Get our VIP plugins - Requires WordPress.com credentials....
@@ -448,20 +470,19 @@ PHP
 		printf "**************   VIP Plugins NOT FOUND! Please manually add these files to wp-content/themes/   **************\n"
 		printf "**************                                                                                  **************\n"
 		printf "**************************************************************************************************************\n\n"
-
 	else
-		printf "VIP Plugins already setup... Thou shall pass.\n"
+		printf "\nVIP Plugins detected...\n"
 	fi
 
 	# Get JetPack !! MUST LOAD FIRST OR ELSE VIP "is_mobile()" ERRORS OCCURE!
 	if [ ! -d /srv/www/src/wp-content/plugins/jetpack ]
 	then
-		printf "Checking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/\n"
+		printf "\nChecking out the JetPack plugin... http://plugins.svn.wordpress.org/jetpack/\n"
 		wp plugin install jetpack
 		wp plugin activate jetpack
 		printf "****************************************************\n"
 	else
-		printf "Updating JetPack...\n"
+		printf "\nUpdating JetPack...\n"
 		wp plugin update jetpack
 		printf "****************************************************\n"
 	fi
@@ -469,13 +490,13 @@ PHP
 	# Get the Developer plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/developer ]
 	then
-		printf "Checking out the Developer plugin... http://wordpress.org/plugins/developer/\n"
+		printf "\nChecking out the Developer plugin... http://wordpress.org/plugins/developer/\n"
 		cd /srv/www/src/
 		wp plugin install developer
 		wp plugin activate developer
 		printf "****************************************************\n"
 	else
-		printf "Updating the Developer plugin...\n"
+		printf "\nUpdating the Developer plugin...\n"
 		wp plugin update developer
 		printf "****************************************************\n"
 	fi
@@ -483,12 +504,12 @@ PHP
 	# Get Debug Bar plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar ]
 	then
-		printf "Checking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/\n"
+		printf "\nChecking out the Debug Bar plugin... http://plugins.svn.wordpress.org/debug-bar/\n"
 		wp plugin install debug-bar
 		wp plugin activate debug-bar
 		printf "****************************************************\n"
 	else
-		printf "Updating the Debug Bar plugin...\n"
+		printf "\nUpdating the Debug Bar plugin...\n"
 		wp plugin update debug-bar
 		printf "****************************************************\n"
 	fi
@@ -496,12 +517,12 @@ PHP
 	# Get Debug Bar Console plugin
 	if [ ! -d /srv/www/src/wp-content/plugins/debug-bar-console ]
 	then
-		printf "Checking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/\n"
+		printf "\nChecking out the Debug Bar Console plugin... http://plugins.svn.wordpress.org/debug-bar-console/\n"
 		wp plugin install debug-bar-console
 		wp plugin activate debug-bar-console
 		printf "****************************************************\n"
 	else
-		printf "Updating the Debug Bar plugin...\n"
+		printf "\nUpdating the Debug Bar plugin...\n"
 		wp plugin update debug-bar-console
 		printf "****************************************************\n"
 	fi
@@ -509,12 +530,12 @@ PHP
 	# Get VIP Scanner
 	if [ ! -d /srv/www/src/wp-content/plugins/vip-scanner ]
 	then
-		printf "Checking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/\n"
+		printf "\nChecking out the VIP Scanner plugin... http://plugins.svn.wordpress.org/vip-scanner/\n"
 		wp plugin install vip-scanner
 		wp plugin activate vip-scanner
 		printf "****************************************************\n"
 	else
-		printf "Updating VIP Scanner...\n"
+		printf "\nUpdating VIP Scanner...\n"
 		wp plugin update vip-scanner
 		printf "****************************************************\n"
 	fi
@@ -522,12 +543,12 @@ PHP
 	# Get MP6
 	if [ ! -d /srv/www/src/wp-content/plugins/mp6 ]
 	then
-		printf "Checking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/\n"
+		printf "\nChecking out the MP6 plugin... http://plugins.svn.wordpress.org/mp6/\n"
 		wp plugin install mp6
 		wp plugin activate mp6
 		printf "****************************************************\n"
 	else
-		printf "Updating MP6...\n"
+		printf "\nUpdating MP6...\n"
 		wp plugin update mp6
 		printf "****************************************************\n"
 	fi
@@ -536,13 +557,13 @@ PHP
 	re='^[0-9]+$'
 	if ! [[ $defaulttheme =~ $re ]] ; then
 		wp theme activate makeblog
-		printf "Makeblog enabled...\n"
+		printf "\nMakeblog enabled...\n"
 	fi
 
 	# Download phpMyAdmin 4.0.3
 	if [ ! -d /srv/www/default/database-admin ]
 	then
-		printf "Downloading phpMyAdmin 4.0.3....\n"
+		printf "\nDownloading phpMyAdmin 4.0.3....\n"
 		cd /srv/www/default
 		wget -q -O phpmyadmin.tar.gz 'http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.0.3/phpMyAdmin-4.0.3-english.tar.gz/download#!md5!07dc6ed4d65488661d2581de8d325493'
 		tar -xf phpmyadmin.tar.gz
